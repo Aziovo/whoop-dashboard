@@ -6,6 +6,7 @@ import {
   FileText,
   Activity,
   Settings,
+  Mail,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ import KanbanBoard from './components/KanbanBoard';
 import DocsPage from './components/DocsPage';
 import LogPage from './components/LogPage';
 import SettingsPage from './components/SettingsPage';
+import EmailPanel from './components/EmailPanel';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -26,6 +28,7 @@ export default function App() {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'email', label: 'Email', icon: Mail },
     { id: 'docs', label: 'Docs', icon: FileText },
     { id: 'log', label: 'Log', icon: Activity },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -43,6 +46,8 @@ export default function App() {
         );
       case 'tasks':
         return <KanbanBoard appState={appState} />;
+      case 'email':
+        return <EmailPanel />;
       case 'docs':
         return <DocsPage appState={appState} />;
       case 'log':
