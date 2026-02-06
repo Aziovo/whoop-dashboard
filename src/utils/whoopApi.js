@@ -55,7 +55,7 @@ export const handleOAuthCallback = async (code) => {
     // Use local OAuth proxy server to exchange code for token
     // Local dev: http://localhost:4000/api/auth/callback
     // Production: /api/auth/callback (Vercel serverless)
-    const apiEndpoint = process.env.NODE_ENV === 'production' 
+    const apiEndpoint = import.meta.env.MODE === 'production' 
       ? '/api/auth/callback'
       : 'http://localhost:4000/api/auth/callback'
 

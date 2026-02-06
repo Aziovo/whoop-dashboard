@@ -125,7 +125,16 @@ De app werkt ook **zonder** Whoop verbinding:
 - Alle features zijn testbaar
 - Perfecte manier om de app te verkennen
 
-## 📦 Deployment (Vercel)
+## 📦 Deployment
+
+### 🎯 Deploying to EkoonICT (www.ekoonict.com)
+
+For specific deployment instructions to www.ekoonict.com via GitHub + Vercel, see:
+- **📋 [READY_TO_DEPLOY.md](./READY_TO_DEPLOY.md)** - Complete deployment checklist
+- **🔗 [GITHUB_INTEGRATION.md](./GITHUB_INTEGRATION.md)** - How to integrate into EkoonICTWebsite repo
+- **📚 [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)** - Architecture & integration options
+
+### 📦 Generic Vercel Deployment (Any Project)
 
 ### Automatische Deployment
 
