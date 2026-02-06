@@ -18,9 +18,11 @@ export default async function handler(req, res) {
     }
 
     // Get credentials from environment variables (set in Vercel)
-    const clientId = process.env.VITE_WHOOP_CLIENT_ID
-    const clientSecret = process.env.VITE_WHOOP_CLIENT_SECRET
-    const redirectUri = process.env.VITE_WHOOP_REDIRECT_URI || 'http://localhost:3000/auth/callback'
+    // Note: Backend uses regular env vars (no VITE_ prefix)
+    // Frontend uses VITE_ prefix for client-side exposure
+    const clientId = process.env.WHOOP_CLIENT_ID || process.env.VITE_WHOOP_CLIENT_ID
+    const clientSecret = process.env.WHOOP_CLIENT_SECRET || process.env.VITE_WHOOP_CLIENT_SECRET
+    const redirectUri = process.env.WHOOP_REDIRECT_URI || process.env.VITE_WHOOP_REDIRECT_URI || 'http://localhost:3000/auth/callback'
 
     if (!clientId || !clientSecret) {
       console.error('Missing Whoop credentials in environment')
