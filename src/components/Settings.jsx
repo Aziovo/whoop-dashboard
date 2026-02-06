@@ -29,9 +29,15 @@ export const Settings = ({ currentUser, onUpdateProfile, isAuthenticated, onLogi
   const handleOAuthConnect = () => {
     // Generate authorization URL for Whoop OAuth
     const clientId = import.meta.env.VITE_WHOOP_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_WHOOP_REDIRECT_URI || 'http://localhost:5173/callback';
-    const scope = 'read:cycles read:sleep read:strain read:recovery read:heart_rate read:physiological_data';
-    const authUrl = `https://api.whoop.com/oauth/oauth2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}`;
+    const redirectUri = import.meta.env.VITE_WHOOP_REDIRECT_URI || window.location.origin + '/auth/callback';
+    const scope = 'read:recovery read:cycles read:workout read:sleep read:profile read:body_measurement offline';
+    
+    if (!clientId) {
+      alert('❌ Whoop Client ID not configured. Please set VITE_WHOOP_CLIENT_ID environment variable.');
+      return;
+    }
+
+    const authUrl = `https://api.prod.whoop.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}`;
     window.location.href = authUrl;
   };
 

@@ -14,6 +14,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { exportData, importData, downloadJSON } from '../utils/storage';
+import { initOAuth } from '../utils/whoopApi';
 
 const SettingsPage = ({ appState, isAuthenticated, logout }) => {
   const [activeSection, setActiveSection] = useState('profile');
@@ -178,6 +179,7 @@ const SettingsPage = ({ appState, isAuthenticated, logout }) => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => initOAuth()}
                   className="w-full px-6 py-3 bg-green-500 hover:bg-green-600 text-black font-semibold rounded-lg"
                 >
                   Connect Whoop Account
