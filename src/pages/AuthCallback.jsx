@@ -1,89 +1,86 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useWhoop } from '../context/WhoopContext'
-import { handleOAuthCallback } from '../utils/whoopApi'
-import { AlertCircle, CheckCircle } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { handleOAuthCallback } from '../utils/whoopApi';
 
-const AuthCallback = () => {
-  const navigate = useNavigate()
-  const { setAuthenticated } = useWhoop()
-  const [status, setStatus] = useState('processing') // processing, success, error
-  const [error, setError] = useState('')
+export default function AuthCallback() {
+  const [status, setStatus] = useState('processing');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get authorization code from URL
-        const params = new URLSearchParams(window.location.search)
-        const code = params.get('code')
-        const errorParam = params.get('error')
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const error = params.get('error');
 
-        if (errorParam) {
-          setStatus('error')
-          setError(`Whoop authorization failed: ${errorParam}`)
-          setTimeout(() => navigate('/whoop'), 3000)
-          return
+        if (error) {
+          console.error('OAuth error:', error);
+          setStatus('error');
+          setTimeout(() => navigate('/'), 3000);
+          return;
         }
 
         if (!code) {
-          setStatus('error')
-          setError('No authorization code received from Whoop')
-          setTimeout(() => navigate('/whoop'), 3000)
-          return
+          setStatus('error');
+          return;
         }
 
-        // Exchange code for access token
-        await handleOAuthCallback(code)
+        // Exchange code for token
+        await handleOAuthCallback(code);
         
-        // Update auth state
-        setAuthenticated(true)
-        
-        setStatus('success')
-        setError('')
-        
-        // Redirect after 2 seconds
-        setTimeout(() => navigate('/whoop'), 2000)
+        setStatus('success');
+        // Redirect back to dashboard after 2 seconds
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } catch (err) {
-        console.error('Auth callback error:', err)
-        setStatus('error')
-        setError(err.message || 'Authentication failed. Please try again.')
-        setTimeout(() => navigate('/whoop'), 3000)
+        console.error('Callback error:', err);
+        setStatus('error');
       }
-    }
+    };
 
-    handleCallback()
-  }, [navigate, setAuthenticated])
+    handleCallback();
+  }, [navigate]);
 
   return (
-    <div className="page-container flex items-center justify-center h-screen">
-      <div className="text-center max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white flex items-center justify-center">
+      <div className="text-center">
         {status === 'processing' && (
           <>
-            <div className="w-16 h-16 border-4 border-whoop-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Bezig met inloggen...</h2>
-            <p className="text-gray-400">Je Whoop account wordt verbonden</p>
+            <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+              <span className="text-4xl">💚</span>
+            </div>
+            <h1 className="text-4xl font-bold mb-2">Connecting Whoop...</h1>
+            <p className="text-gray-400">Authorizing your account</p>
           </>
         )}
 
         {status === 'success' && (
           <>
-            <CheckCircle className="w-16 h-16 text-whoop-green mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2 text-whoop-green">Verbonden!</h2>
-            <p className="text-gray-400">Je Whoop account is succesvol gekoppeld. Je wordt doorgestuurd...</p>
+            <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-4xl">✓</span>
+            </div>
+            <h1 className="text-4xl font-bold mb-2 text-green-400">Connected!</h1>
+            <p className="text-gray-400">Redirecting to dashboard...</p>
           </>
         )}
 
         {status === 'error' && (
           <>
-            <AlertCircle className="w-16 h-16 text-whoop-red mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2 text-whoop-red">Error</h2>
-            <p className="text-gray-400 mb-4">{error}</p>
-            <p className="text-sm text-gray-500">Je wordt doorgestuurd naar Whoop dashboard...</p>
+            <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-4xl">✕</span>
+            </div>
+            <h1 className="text-4xl font-bold mb-2 text-red-400">Connection Failed</h1>
+            <p className="text-gray-400">Please try again from Settings</p>
+            <button
+              onClick={() => navigate('/')}
+              className="mt-6 px-6 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg transition"
+            >
+              Go Back
+            </button>
           </>
         )}
       </div>
     </div>
-  )
+  );
 }
-
-export default AuthCallback
