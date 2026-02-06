@@ -26,7 +26,7 @@ const DashboardHome = ({ appState, whoopData, usingDemoData }) => {
   // Get today's events
   const today = new Date().toISOString().split('T')[0];
   const todayEvents =
-    appState.calendar?.filter((e) => e.date?.startsWith(today)) || [];
+    appState.calendar?.filter((e) => typeof e.date === 'string' && e.date.startsWith(today)) || [];
 
   // Get recent tasks
   const recentTasks = appState.todos?.slice(0, 5) || [];
