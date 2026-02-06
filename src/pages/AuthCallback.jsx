@@ -9,22 +9,32 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
+        console.log('AuthCallback: Full URL:', window.location.href);
+        console.log('AuthCallback: Search params:', window.location.search);
+        
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
         const error = params.get('error');
+        const errorDescription = params.get('error_description');
+
+        console.log('AuthCallback: Code:', code);
+        console.log('AuthCallback: Error:', error, errorDescription);
 
         if (error) {
-          console.error('OAuth error:', error);
+          console.error('OAuth error from Whoop:', error, errorDescription);
           setStatus('error');
           setTimeout(() => navigate('/'), 3000);
           return;
         }
 
         if (!code) {
+          console.error('No authorization code found in URL');
           setStatus('error');
+          setTimeout(() => navigate('/'), 3000);
           return;
         }
 
+        console.log('AuthCallback: Exchanging code for token...');
         // Exchange code for token
         await handleOAuthCallback(code);
         
@@ -36,6 +46,7 @@ export default function AuthCallback() {
       } catch (err) {
         console.error('Callback error:', err);
         setStatus('error');
+        setTimeout(() => navigate('/'), 3000);
       }
     };
 

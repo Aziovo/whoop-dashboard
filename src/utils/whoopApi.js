@@ -8,17 +8,23 @@ const WHOOP_CONFIG = {
   clientId: import.meta.env.VITE_WHOOP_CLIENT_ID,
   clientSecret: import.meta.env.VITE_WHOOP_CLIENT_SECRET,
   redirectUri: (() => {
-    // Use environment variable if set, otherwise construct from current domain
+    // Priority 1: Use environment variable if set
     if (import.meta.env.VITE_WHOOP_REDIRECT_URI) {
       return import.meta.env.VITE_WHOOP_REDIRECT_URI;
     }
     
-    // Auto-detect current domain for redirect
+    // Priority 2: Auto-detect current domain for redirect
     if (typeof window !== 'undefined') {
-      return `${window.location.origin}/auth/callback`;
+      const origin = window.location.origin;
+      // Ensure it's HTTPS in production
+      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        return `${origin}/auth/callback`;
+      }
+      // Force HTTPS for production domains
+      return `${origin.replace('http://', 'https://')}/auth/callback`;
     }
     
-    // Fallback
+    // Priority 3: Fallback
     return 'http://localhost:3000/auth/callback';
   })()
 }
