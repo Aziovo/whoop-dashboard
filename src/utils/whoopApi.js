@@ -7,7 +7,20 @@ const WHOOP_CONFIG = {
   apiBase: import.meta.env.VITE_WHOOP_API_BASE || 'https://api.prod.whoop.com/v2',
   clientId: import.meta.env.VITE_WHOOP_CLIENT_ID,
   clientSecret: import.meta.env.VITE_WHOOP_CLIENT_SECRET,
-  redirectUri: import.meta.env.VITE_WHOOP_REDIRECT_URI || 'http://localhost:3000/auth/callback'
+  redirectUri: (() => {
+    // Use environment variable if set, otherwise construct from current domain
+    if (import.meta.env.VITE_WHOOP_REDIRECT_URI) {
+      return import.meta.env.VITE_WHOOP_REDIRECT_URI;
+    }
+    
+    // Auto-detect current domain for redirect
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/auth/callback`;
+    }
+    
+    // Fallback
+    return 'http://localhost:3000/auth/callback';
+  })()
 }
 
 // Token management
